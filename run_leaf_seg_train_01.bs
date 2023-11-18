@@ -1,0 +1,13 @@
+#!/bin/bash 
+#SBATCH -N 1 # number of minimum nodes 
+#SBATCH -c 1 # number of cores 
+#SBATCH --gres=gpu:1 # Request 1 gpu   2080ti:1	TeslaP100:1 3090:1
+#SBATCH --mail-user=omerbenishay@campus.technion.ac.il 
+#SBATCH --mail-type=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL 
+#SBATCH --job-name="leaf_01" 
+#SBATCH -o out_leaf_01.txt # stdout goes here 
+#SBATCH -e err_leaf_01.txt # stderr goes here 
+
+source /home/omerbenishay/miniconda3/etc/profile.d/conda.sh 
+conda activate leafseg
+python LeafSegmentor.py train dataset_A1_t1.json -k 10 -e 100 -s 100

@@ -1,0 +1,43 @@
+
+**************************************
+Windows installations GIP2018
+python 3.6
+CUDA 10.0
+
+pip install tensorflow==1.14.0
+pip install scipy==1.3.1
+pip install scikit-image==0.15.0
+pip install opencv-python==4.1.1.26
+pip install tqdm==4.43.0
+pip install questionary==1.5.1
+pip install pycocotools-win==2.0
+pip install ipython==7.8.0
+pip install Keras==2.2.0
+
+pip install h5py==2.10.0
+pip install tensorflow-gpu==1.14.0
+pip install Keras-Applications==1.0.2
+
+**************************************
+LINUX on gipdeep
+conda create --name leafseg python=3.6.8
+conda activate leafseg
+conda install tensorflow==1.14.0
+conda install tensorflow-gpu==1.14.0
+conda install scikit-image==0.15.0
+pip3 install opencv-python==4.1.1.26
+conda install tqdm==4.43.0
+pip3 install questionary==1.5.1
+conda install -c conda-forge pycocotools==2.0
+conda install ipython==7.8.0
+pip3 install Keras==2.2.0
+
+conda list -n leafseg -e > env0.yml
+
+trouble-shooting:
+$ mkdir -p ./run/user/243282783
+$ chmod 0700 ./run/user/243282783
+$ export XDG_RUNTIME_DIR=./run/user/243282783
+$ XLA_FLAGS=--xla_hlo_profile
+$ TF_XLA_FLAGS=--tf_xla_cpu_global_jit
+$ export QT_QPA_PLATFORM='offscreen'
