@@ -1,0 +1,51 @@
+#!/bin/bash 
+#SBATCH -N 1 # number of minimum nodes 
+#SBATCH -c 1 # number of cores 
+#SBATCH --gres=gpu:1 # Request 1 gpu   2080ti:1	TeslaP100:1 3090:1 1080ti:1 
+#SBATCH --mail-user=rotem.green@campus.technion.ac.il 
+#SBATCH --mail-type=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL 
+#SBATCH --job-name="Leaf_infer_all" 
+#SBATCH -o logs/out_infer_all.txt # stdout goes here 
+#SBATCH -e logs/err_infer_all.txt # stderr goes here 
+
+set -x #echo on
+
+echo "Running Inference on all folders"
+
+source /home/rotem.green/miniconda3/etc/profile.d/conda.sh 
+conda activate leafseg
+
+last_A1_model=$(ls -d models/A1/* | tail -1)
+echo "Running A1 with ${last_A1_model}..."
+python LeafSegmentor.py infer test_set/A1 -m $last_A1_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
+
+last_A2_model=$(ls -d models/A2/* | tail -1)
+echo "Running A2 ${last_A2_model}..."
+python LeafSegmentor.py infer test_set/A2 -m $last_A2_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
+
+last_A3_model=$(ls -d models/A3/* | tail -1)
+echo "Running A3 with ${last_A3_model}..."
+python LeafSegmentor.py infer test_set/A3 -m $last_A3_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
+
+last_A4_model=$(ls -d models/A4/* | tail -1)
+echo "Running A4 with ${last_A4_model}..."
+python LeafSegmentor.py infer test_set/A4 -m $last_A4_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
+
+echo "Converting to h5 file..."
+output_paths=()
+output_paths+=( "$(find outputs -type d -name A1 | sort -n | tail -n 1)" )
+output_paths+=( "$(find outputs -type d -name A2 | sort -n | tail -n 1)" )
+output_paths+=( "$(find outputs -type d -name A3 | sort -n | tail -n 1)" )
+output_paths+=( "$(find outputs -type d -name A4 | sort -n | tail -n 1)" )
+echo "output_paths: ${output_paths[*]}"
+python hdf5_utils.py write "${output_paths[@]}"
+
+new_h5_file=$(ls -d submissions/* | tail -1)
+echo "Zipping ${new_h5_file}..."
+rm -f submission.zip
+zip -r -j submission.zip $new_h5_file
+
+echo "Done!"
+
+
+

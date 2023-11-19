@@ -1,0 +1,13 @@
+#!/bin/bash 
+#SBATCH -N 1 # number of minimum nodes 
+#SBATCH -c 1 # number of cores 
+#SBATCH --gres=gpu:1 # Request 1 gpu   2080ti:1	TeslaP100:1 3090:1 1080ti:1 
+#SBATCH --mail-user=rotem.green@campus.technion.ac.il 
+#SBATCH --mail-type=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL 
+#SBATCH --job-name="leaf_infer" 
+#SBATCH -o logs/out_leaf.txt # stdout goes here 
+#SBATCH -e logs/err_leaf.txt # stderr goes here 
+
+source /home/rotem.green/miniconda3/etc/profile.d/conda.sh 
+conda activate leafseg
+python LeafSegmentor.py infer test_set/A1 -m models/leaves20231119T0023/mask_rcnn_leaves.h5 --no-contours --no-pictures

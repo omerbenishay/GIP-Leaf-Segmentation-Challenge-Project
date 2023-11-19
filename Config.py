@@ -46,7 +46,7 @@ class LeafSegmentorConfig(Config):
     # A bigger number improves accuracy of validation stats, but slows
     # down the training.
     # use small validation steps IF the epoch is small
-    VALIDATION_STEPS = 50
+    VALIDATION_STEPS = 500
 
     MEAN_PIXEL = np.array([123.7, 116.8, 103.9])  # ImageNet
     #MEAN_PIXEL = np.array([0.0, 0.0, 0.0])    # tst

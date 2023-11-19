@@ -1,0 +1,23 @@
+#!/bin/bash 
+#SBATCH -N 1 # number of minimum nodes 
+#SBATCH -c 1 # number of cores 
+#SBATCH --gres=gpu:1 # Request 1 gpu   2080ti:1	TeslaP100:1 3090:1
+#SBATCH --mail-user=rotem.green@campus.technion.ac.il 
+#SBATCH --mail-type=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL 
+#SBATCH --job-name="leaf_train_all" 
+#SBATCH -o logs/out_train_all.txt # stdout goes here 
+#SBATCH -e logs/err_train_all.txt # stderr goes here 
+
+source /home/rotem.green/miniconda3/etc/profile.d/conda.sh 
+conda activate leafseg
+
+saved_samples=10
+epochs=100
+steps_per_epoch=400
+
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 1 -lt clean
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 2 -lt clean
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 3 -lt clean
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 4 -lt clean
+
+

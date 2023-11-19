@@ -23,7 +23,10 @@ def train(args):
     steps_per_epoch = args.steps_per_epoch
     layers = args.layers
     pretrain = args.pretrain
-
+    Afolder = args.Afolder
+    leaf_type = args.leaf_type
+    
+    output = os.path.join(output, "A" + Afolder)
     # Create config class
     train_config = LeafSegmentorConfig()
 
@@ -42,8 +45,8 @@ def train(args):
     dataset_class = locate(dataset_class)
 
     dataset_config = dataset_config["config"]
-    dataset_train = dataset_class.from_config(dataset_config["train"], train_config.IMAGE_SHAPE[0], train_config.IMAGE_SHAPE[1])
-    dataset_valid = dataset_class.from_config(dataset_config["valid"], train_config.IMAGE_SHAPE[0], train_config.IMAGE_SHAPE[1])
+    dataset_train = dataset_class.from_config(dataset_config["train"], train_config.IMAGE_SHAPE[0], train_config.IMAGE_SHAPE[1], Afolder, leaf_type)
+    dataset_valid = dataset_class.from_config(dataset_config["valid"], train_config.IMAGE_SHAPE[0], train_config.IMAGE_SHAPE[1], Afolder, leaf_type)
 
     # Save train samples
     if samples_number > 0:

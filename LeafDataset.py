@@ -35,9 +35,9 @@ class LeafDataset(utils.Dataset):
             self.init_bgs()
 
     @classmethod
-    def from_config(cls, config_dict, width, height):
-        folder_objects = config_dict.get("folder_objects")
-        folder_bgs = config_dict.get("folder_bgs")
+    def from_config(cls, config_dict, width, height, Afolder, leaf_type):
+        folder_objects = os.path.join(config_dict.get("folder_objects"), 'A' + Afolder + '_' + leaf_type)
+        folder_bgs = os.path.join(config_dict.get("folder_bgs"), 'A' + Afolder)
         min_leaf = config_dict.get("min_leaf")
         max_leaf = config_dict.get("max_leaf")
         min_plants = config_dict.get("min_plants")

@@ -25,7 +25,9 @@ class HelpReference:
         steps_per_epoch = "number of training steps to perform per epoch"
         layers = "layers of model to train. Other layers will remain unchanged"
         pretrain = "path to a .h5 file with a pretrained model, or just 'COCO' to retrieve\
-        the coco pretrain file. [default: COCO]" 
+        the coco pretrain file. [default: COCO]"
+        folder = "specify which A folder to use for training"
+        leaf_type = "specify which leaf type to use for training" 
 
     class InferReference:
         description = "Loads a dataset, loads a model, runs inference on all the pictures located in a directory. Outputs a set of pictures with a translucent mask on every detected leaf. Additionally, a json annotation file is generated."
