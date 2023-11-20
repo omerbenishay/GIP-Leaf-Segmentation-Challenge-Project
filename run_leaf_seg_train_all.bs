@@ -12,12 +12,13 @@ source /home/rotem.green/miniconda3/etc/profile.d/conda.sh
 conda activate leafseg
 
 saved_samples=10
-epochs=100
-steps_per_epoch=400
+epochs=2
+steps_per_epoch=1
+leaf_type="clean"
 
-python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 1 -lt clean
-python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 2 -lt clean
-python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 3 -lt clean
-python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 4 -lt clean
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 1 -lt leaf_type
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 2 -lt leaf_type
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 3 -lt leaf_type
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 4 -lt leaf_type
 
 

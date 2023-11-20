@@ -50,6 +50,7 @@ class LeafDataset(utils.Dataset):
         image_size = config_dict.get("image_size")
         leaf_dataset = cls(folder_objects, folder_bgs, min_leaf, max_leaf, min_plants, max_plants, leaf_angle_offset, leaf_position_offset, image_size, min_scale, max_scale)
         leaf_dataset.centered_leaves = config_dict.get("centered_leaves")
+        leaf_dataset.small_leaf_images_ratio = config_dict.get("small_leaf_images_ratio")
         leaf_dataset.load_shapes(number_of_images, height, width)
         leaf_dataset.prepare()
 
@@ -84,15 +85,16 @@ class LeafDataset(utils.Dataset):
         # Add classes
         self.add_class("leaves", 1, "leaf")
 
+        num_of_small_leaf_images = math.floor(count * self.small_leaf_images_ratio)
         for i in range(count):
-            print('Image', i, end='\r')
+            # print('Image', i, end='\r')
             if self.max_plants > 1:
                 bg_color, shapes = self.random_image_multiple_plants(height, width)
             else:
-                bg_color, shapes = self.random_image(height, width)
+                bg_color, shapes = self.random_image(height, width, is_small_leaf_image=i < num_of_small_leaf_images)
             self.add_image("leaves", image_id=i, path=None, width=width, height=height, bg_color=bg_color, shapes=shapes)
 
-    def random_image(self, height, width):
+    def random_image(self, height, width, is_small_leaf_image=False):
         bg_color = np.array([random.randint(0, 255) for _ in range(3)])
 
         shapes = []
@@ -113,7 +115,8 @@ class LeafDataset(utils.Dataset):
         for _ in range(N):
             # AZ modified
             if self.centered_leaves:
-                shape, location, scale, angle, index = self.random_shape_centered(height, width, x_location, y_location, prev_angle)
+                # TODO: change is_small_leaf_image accoring to a image level ratio.
+                shape, location, scale, angle, index = self.random_shape_centered(height, width, x_location, y_location, prev_angle, is_small_leaf=is_small_leaf_image)
             else:
                 shape, location, scale, angle, index = self.random_shape(height, width)
             prev_angle = angle
@@ -172,7 +175,7 @@ class LeafDataset(utils.Dataset):
 
         return shape, (x_location, y_location), (x_scale, y_scale), angle, index
 
-    def random_shape_centered(self, height, width, x_loc, y_loc, prev_angle):
+    def random_shape_centered(self, height, width, x_loc, y_loc, prev_angle, is_small_leaf=False):
         shape = random.choice(["leaf"])
 
         x_scale = random.uniform(self.min_scale, self.max_scale)
