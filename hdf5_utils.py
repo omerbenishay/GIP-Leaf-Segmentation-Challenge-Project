@@ -25,11 +25,9 @@ def write_test_images(folder_paths):
     output_file =  'submissions/submission_{:%Y%m%dT%H%M}'.format(datetime.datetime.now())
     with h5py.File(output_file + ".h5",'w') as f:
         for folder_path in folder_paths:
-            print(f'folder_path {folder_path}')
             folder_group = f.create_group(basename(normpath(folder_path)))
             for img_name in os.listdir(folder_path):
                 img_path = os.path.join(folder_path, img_name)
-                print(f'image path: {img_path}')
                 img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
                 img_group_name = img_name.split('_')[0]
                 img_group = folder_group.create_group(img_group_name)

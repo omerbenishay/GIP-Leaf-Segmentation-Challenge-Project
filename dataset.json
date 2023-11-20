@@ -14,9 +14,10 @@
             "min_scale": 0.5,
             "max_scale": 1.5,
             "image_size": 512,
+            "small_leaf_percentile": 20,
             "number_of_images": 20000,
             "centered_leaves": true,
-            "small_leaf_images_ratio": 0.25
+            "small_leaf_images_ratio": 0
         },
         "valid":{
             "folder_objects": "datasets/06 - Leaves",
@@ -30,9 +31,10 @@
             "min_scale": 0.5,
             "max_scale": 1.5,
             "image_size": 512,
+            "small_leaf_percentile": 20,
             "number_of_images": 2000,
             "centered_leaves": true,
-            "small_leaf_images_ratio": 0.25
+            "small_leaf_images_ratio": 0
         }
     }
 }
