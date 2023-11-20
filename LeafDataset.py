@@ -11,7 +11,7 @@ class LeafDataset(utils.Dataset):
     def __init__(self, folder_objects=None, folder_bgs=None,
                  min_leaf=100, max_leaf=200, min_plants=10, max_plants=20,
                  leaf_angle_offset = 10, leaf_position_offset = 0,
-                 image_size=512, min_scale=0.5, max_scale=1.5, min_aspect_ratio=1.2):
+                 image_size=512, min_scale=0.5, max_scale=1.5, min_aspect_ratio=1.2, small_leaf_percentile = 20):
         utils.Dataset.__init__(self)
         self.folder_objects = folder_objects
         self.folder_bgs = folder_bgs
@@ -28,6 +28,8 @@ class LeafDataset(utils.Dataset):
         self.max_aspect_ratio = 1.0 / min_aspect_ratio
         self.img2 = []
         self.bg = []
+        self.img_heights = []
+        self.small_leaf_percentile = small_leaf_percentile
 
         if self.folder_objects is not None:
             self.init_objects()
@@ -48,8 +50,10 @@ class LeafDataset(utils.Dataset):
         max_scale = config_dict.get("max_scale")
         number_of_images = config_dict.get("number_of_images")
         image_size = config_dict.get("image_size")
-        leaf_dataset = cls(folder_objects, folder_bgs, min_leaf, max_leaf, min_plants, max_plants, leaf_angle_offset, leaf_position_offset, image_size, min_scale, max_scale)
+        small_leaf_percentile = config_dict.get("small_leaf_percentile")
+        leaf_dataset = cls(folder_objects, folder_bgs, min_leaf, max_leaf, min_plants, max_plants, leaf_angle_offset, leaf_position_offset, image_size, min_scale, max_scale, small_leaf_percentile=small_leaf_percentile)
         leaf_dataset.centered_leaves = config_dict.get("centered_leaves")
+        leaf_dataset.img_heights = leaf_dataset.build_leaf_height_map(folder_objects)
         leaf_dataset.load_shapes(number_of_images, height, width)
         leaf_dataset.prepare()
 
@@ -171,7 +175,16 @@ class LeafDataset(utils.Dataset):
         index = random.randint(0, self.number_of_leafs - 1)
 
         return shape, (x_location, y_location), (x_scale, y_scale), angle, index
+    
+    def get_small_leaf_index(self):
+        small_leaves_indexes = []
+        percentile_height = np.percentile(self.img_heights, self.small_leaf_percentile)
+        for index, height in enumerate(self.img_heights):
+            if height < percentile_height:
+                small_leaves_indexes.append(index)
 
+        return random.choice(small_leaves_indexes)
+        
     def random_shape_centered(self, height, width, x_loc, y_loc, prev_angle):
         shape = random.choice(["leaf"])
 
@@ -184,7 +197,8 @@ class LeafDataset(utils.Dataset):
         x_location = math.floor(x_loc - self.leaf_position_offset * math.sin(math.radians(angle))) # 64 is approx half size of leaf height in pixels
         y_location = math.floor(y_loc - self.leaf_position_offset * math.cos(math.radians(angle))) # 64   120      80  100
 
-        index = random.randint(0, self.number_of_leafs - 1)
+        # index = random.randint(0, self.number_of_leafs - 1)
+        index = self.get_small_leaf_index()
 
         return shape, (x_location, y_location), (x_scale, y_scale), angle, index
 
@@ -251,4 +265,25 @@ class LeafDataset(utils.Dataset):
             image = add_image_without_transparency(image, np.array(self.img2[index]), x_location, y_location, x_scale,
                                                    y_scale, angle)
         return image
+
+    def build_leaf_height_map(self, folder_path):
+        leaf_heights = []
+        for filename in os.listdir(folder_path):
+            if filename.lower().endswith(".png"):
+                file_path = os.path.join(folder_path, filename)
+                height = self.get_image_height(file_path)
+                
+                if height is not None:
+                    leaf_heights.append(height)
+
+        return leaf_heights
+        
+    def get_image_height(self, file_path):
+        try:
+            with Image.open(file_path) as img:
+                height = img.height
+                return height
+        except Exception as e:
+            print(f"Error processing {file_path}: {e}")
+            return None
 
