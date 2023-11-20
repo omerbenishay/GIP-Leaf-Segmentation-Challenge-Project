@@ -16,9 +16,9 @@ epochs=100
 steps_per_epoch=400
 leaf_type="clean"
 
-python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 1 -lt leaf_type
-python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 2 -lt leaf_type
-python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 3 -lt leaf_type
-python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 4 -lt leaf_type
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 1 -lt $leaf_type
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 2 -lt $leaf_type
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 3 -lt $leaf_type
+python LeafSegmentor.py train dataset.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 4 -lt $leaf_type
 
 
