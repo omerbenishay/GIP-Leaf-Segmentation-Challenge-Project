@@ -54,6 +54,8 @@ class LeafDataset(utils.Dataset):
         leaf_dataset = cls(folder_objects, folder_bgs, min_leaf, max_leaf, min_plants, max_plants, leaf_angle_offset, leaf_position_offset, image_size, min_scale, max_scale, small_leaf_percentile=small_leaf_percentile)
         leaf_dataset.centered_leaves = config_dict.get("centered_leaves")
         leaf_dataset.small_leaf_images_ratio = config_dict.get("small_leaf_images_ratio")
+        leaf_dataset.small_leaf_position_offset = config_dict.get("small_leaf_position_offset")
+        leaf_dataset.small_leaves_in_image_ratio = config_dict.get("small_leaves_in_image_ratio")
         leaf_dataset.img_heights = leaf_dataset.build_leaf_height_map(folder_objects)
         leaf_dataset.load_shapes(number_of_images, height, width)
         leaf_dataset.prepare()
@@ -116,11 +118,12 @@ class LeafDataset(utils.Dataset):
         y_location = random.randint(min_y, max_y)
         # AZ END INSERT
 
-        for _ in range(N):
+        small_leafs_count = math.floor(N * self.small_leaves_in_image_ratio)
+        for i in range(N):
             # AZ modified
             if self.centered_leaves:
-                # TODO: change is_small_leaf_image accoring to a image level ratio.
-                shape, location, scale, angle, index = self.random_shape_centered(height, width, x_location, y_location, prev_angle, is_small_leaf=is_small_leaf_image)
+                is_small_leaf = is_small_leaf_image or i >= (N - small_leafs_count) # small leaves should be last
+                shape, location, scale, angle, index = self.random_shape_centered(height, width, x_location, y_location, prev_angle, is_small_leaf)
             else:
                 shape, location, scale, angle, index = self.random_shape(height, width)
             prev_angle = angle
@@ -197,12 +200,13 @@ class LeafDataset(utils.Dataset):
         angle = (prev_angle + self.leaf_angle_offset + random.randint(-20, 20)) % 360   # (prev_angle + 120 + random.randint(-10, 10))
         #angle = random.randint(0, 360)
 
-        x_location = math.floor(x_loc - self.leaf_position_offset * math.sin(math.radians(angle))) # 64 is approx half size of leaf height in pixels
-        y_location = math.floor(y_loc - self.leaf_position_offset * math.cos(math.radians(angle))) # 64   120      80  100
-
         if is_small_leaf:
+            x_location = math.floor(x_loc - self.small_leaf_position_offset * math.sin(math.radians(angle)))
+            y_location = math.floor(y_loc - self.small_leaf_position_offset * math.cos(math.radians(angle)))
             index = self.get_small_leaf_index()
         else:
+            x_location = math.floor(x_loc - self.leaf_position_offset * math.sin(math.radians(angle))) # 64 is approx half size of leaf height in pixels
+            y_location = math.floor(y_loc - self.leaf_position_offset * math.cos(math.radians(angle))) # 64   120      80  100
             index = random.randint(0, self.number_of_leafs - 1)
 
         return shape, (x_location, y_location), (x_scale, y_scale), angle, index

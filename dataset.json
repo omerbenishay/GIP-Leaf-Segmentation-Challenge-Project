@@ -17,7 +17,9 @@
             "small_leaf_percentile": 20,
             "number_of_images": 20000,
             "centered_leaves": true,
-            "small_leaf_images_ratio": 0
+            "small_leaf_images_ratio": 0,
+            "smal_leaf_position_offset": 32,
+            "small_leaves_in_image_ratio": 0
         },
         "valid":{
             "folder_objects": "datasets/06 - Leaves",
@@ -34,7 +36,9 @@
             "small_leaf_percentile": 20,
             "number_of_images": 2000,
             "centered_leaves": true,
-            "small_leaf_images_ratio": 0
+            "small_leaf_images_ratio": 0,
+            "smal_leaf_position_offset": 32,
+            "small_leaves_in_image_ratio": 0
         }
     }
 }
