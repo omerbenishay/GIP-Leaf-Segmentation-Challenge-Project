@@ -29,6 +29,8 @@ def train(args):
     output = os.path.join(output, "A" + Afolder)
     # Create config class
     train_config = LeafSegmentorConfig()
+    train_config.IMAGE_SHAPE[0] = args.image_size
+    train_config.IMAGE_SHAPE[1] = args.image_size
 
     # Create model
     if steps_per_epoch > 0:
