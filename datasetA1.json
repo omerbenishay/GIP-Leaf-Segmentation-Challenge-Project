@@ -17,7 +17,7 @@
             "small_leaf_percentile": 20,
             "number_of_images": 2000,
             "centered_leaves": true,
-            "small_leaf_images_ratio": 1,
+            "small_leaf_images_ratio": 0.5,
             "small_leaf_position_offset": 20,
             "small_leaves_in_image_ratio": 0.4
         },
@@ -36,7 +36,7 @@
             "small_leaf_percentile": 20,
             "number_of_images": 200,
             "centered_leaves": true,
-            "small_leaf_images_ratio": 1,
+            "small_leaf_images_ratio": 0.5,
             "small_leaf_position_offset": 20,
             "small_leaves_in_image_ratio": 0.4
         }

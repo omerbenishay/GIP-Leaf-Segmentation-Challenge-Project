@@ -2353,6 +2353,7 @@ class MaskRCNN():
             # ARA_ModelCheckpoint(self.checkpoint_path, verbose=1, save_weights_only=True, save_best_only=True, monitor='val_MetricIoU', mode='max'),
             ARA_ModelCheckpoint(self.checkpoint_path, verbose=1, save_weights_only=True, save_best_only=True, monitor='val_loss', mode='min'),
             # ARA_ModelCheckpoint(self.checkpoint_path, verbose=1, save_weights_only=True, save_best_only=True, monitor='val_acc', mode='max'),
+            keras.callbacks.early_stopping(monitor='val_loss', patience=10, verbose=1, mode='min'),
         ]
 
         # Add custom callbacks to the list
