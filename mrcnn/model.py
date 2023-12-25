@@ -1841,6 +1841,11 @@ class MaskRCNN():
         self.set_log_dir()
         self.keras_model = self.build(mode=mode, config=config)
 
+        # fix cuDNN failed to initialize problem
+        self.tf_config = tf.compat.v1.ConfigProto()
+        self.tf_config.gpu_options.allow_growth = True
+        self.session = tf.compat.v1.InteractiveSession(config=self.tf_config)
+
     def build(self, mode, config):
         """Build Mask R-CNN architecture.
             input_shape: The shape of the input image.
