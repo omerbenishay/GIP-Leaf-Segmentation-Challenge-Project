@@ -30,6 +30,35 @@ def add_image(img1, img2, x_center, y_center, x_scale, y_scale, angle):
     x_from = x_center - math.floor(cols / 2.)
     y_from = y_center - math.floor(rows / 2.)
 
+    # h = img2.height
+    # w = img2.width
+    # rows,cols,channels = np.asarray(img2).shape
+    
+    # (cX, cY) = (w // 2, h // 2)
+    # #for i,coord in enumerate(bb):
+    # # opencv calculates standard transformation matrix                                                                                                            
+    # M = cv2.getRotationMatrix2D((cX, cY), angle, 1.0)
+    # # Grab  the rotation components of the matrix)                                                                                                                
+    # cos = np.abs(M[0, 0])
+    # sin = np.abs(M[0, 1])
+    
+    # # compute the new bounding dimensions of the image                                                                                                            
+    # nW = int(((h / 2 * sin) + (w * cos * 0)))
+    # nH = int(((h / 2 * cos) + (w * sin * 0)))
+
+    # if(angle <= 90):
+    #     x_from = x_center - math.floor(cols/2.) - nW
+    #     y_from = y_center - math.floor(rows/2.) - nH
+    # elif(angle <= 180):
+    #     x_from = x_center - math.floor(cols/2.) - nW
+    #     y_from = y_center - math.floor(rows/2.) + nH
+    # elif(angle <= 270):
+    #     x_from = x_center - math.floor(cols/2.) + nW
+    #     y_from = y_center - math.floor(rows/2.) + nH
+    # else:
+    #     x_from = x_center - math.floor(cols/2.) + nW
+    #     y_from = y_center - math.floor(rows/2.) - nH
+
     img1.paste(img2, (x_from, y_from), img2)
     # tmp_mask = image_to_mask(img2)
     # tmp_mask = Image.fromarray(tmp_mask)
@@ -57,6 +86,44 @@ def add_image_without_transparency(img1, img2, x_center, y_center, x_scale, y_sc
     img2 = cv2.resize(img2, None, fx=x_scale, fy=y_scale, interpolation=cv2.INTER_CUBIC)
 
     img2 = rotate_bound(img2, 360 - angle)
+
+    # h = img2.shape[0]
+    # w = img2.shape[1]
+    # rows,cols,channels = np.asarray(img2).shape
+    
+    # (cX, cY) = (w // 2, h // 2)
+    # #for i,coord in enumerate(bb):
+    # # opencv calculates standard transformation matrix                                                                                                            
+    # M = cv2.getRotationMatrix2D((cX, cY), angle, 1.0)
+    # # Grab  the rotation components of the matrix)                                                                                                                
+    # cos = np.abs(M[0, 0])
+    # sin = np.abs(M[0, 1])
+    
+    # # compute the new bounding dimensions of the image                                                                                                            
+    # nW = int(((h / 2 * sin) + (w * cos * 0)))
+    # nH = int(((h / 2 * cos) + (w * sin * 0)))
+
+    # if(angle <= 90):
+    #     x_from = x_center - math.floor(cols/2.) - nW
+    #     x_to = x_center + math.ceil(cols / 2.) - nW
+    #     y_from = y_center - math.floor(rows/2.) - nH
+    #     y_to = y_center + math.ceil(rows / 2.) - nH
+    # elif(angle <= 180):
+    #     x_from = x_center - math.floor(cols/2.) - nW
+    #     x_to = x_center + math.ceil(cols / 2.) - nW
+    #     y_from = y_center - math.floor(rows/2.) + nH
+    #     y_to = y_center + math.ceil(rows / 2.) + nH
+    # elif(angle <= 270):
+    #     x_from = x_center - math.floor(cols/2.) + nW
+    #     x_to = x_center + math.ceil(cols / 2.) + nW
+    #     y_from = y_center - math.floor(rows/2.) + nH
+    #     y_to = y_center + math.ceil(rows / 2.) + nH
+    # else:
+    #     x_from = x_center - math.floor(cols/2.) + nW
+    #     x_to = x_center + math.ceil(cols / 2.) + nW
+    #     y_from = y_center - math.floor(rows/2.) - nH
+    #     y_to = y_center + math.ceil(rows / 2.) - nH
+
 
     rows, cols, channels = img2.shape
     x_from = x_center - math.floor(cols / 2.)

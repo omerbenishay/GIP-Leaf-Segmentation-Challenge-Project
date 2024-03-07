@@ -23,20 +23,20 @@ last_A2_model=$(ls -d models/A2/* | tail -1)
 echo "Running A2 ${last_A2_model}..."
 python LeafSegmentor.py infer test_set/A2 -m $last_A2_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
 
-last_A3_model=$(ls -d models/A3/* | tail -1)
-echo "Running A3 with ${last_A3_model}..."
-python LeafSegmentor.py infer test_set/A3 -m $last_A3_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
+# last_A3_model=$(ls -d models/A3/* | tail -1)
+# echo "Running A3 with ${last_A3_model}..."
+# python LeafSegmentor.py infer test_set/A3 -m $last_A3_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
 
-last_A4_model=$(ls -d models/A4/* | tail -1)
-echo "Running A4 with ${last_A4_model}..."
-python LeafSegmentor.py infer test_set/A4 -m $last_A4_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
+# last_A4_model=$(ls -d models/A4/* | tail -1)
+# echo "Running A4 with ${last_A4_model}..."
+# python LeafSegmentor.py infer test_set/A4 -m $last_A4_model/mask_rcnn_leaves.h5 --no-contours --no-pictures
 
 echo "Converting to h5 file..."
 output_paths=()
 output_paths+=( "$(find outputs -type d -name A1 | sort -n | tail -n 1)" )
 output_paths+=( "$(find outputs -type d -name A2 | sort -n | tail -n 1)" )
-output_paths+=( "$(find outputs -type d -name A3 | sort -n | tail -n 1)" )
-output_paths+=( "$(find outputs -type d -name A4 | sort -n | tail -n 1)" )
+# output_paths+=( "$(find outputs -type d -name A3 | sort -n | tail -n 1)" )
+# output_paths+=( "$(find outputs -type d -name A4 | sort -n | tail -n 1)" )
 echo "output_paths: ${output_paths[*]}"
 python hdf5_utils.py write "${output_paths[@]}"
 

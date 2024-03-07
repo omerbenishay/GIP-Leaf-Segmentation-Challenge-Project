@@ -104,10 +104,10 @@ def save_masks(masks, output_dir, image_name):
         mask = masks[..., i]
         image += mask.astype('uint8') * (i + 1)
 
-    my_cm = cm.get_cmap(COLOR_MAP, masks_shape[-1] + 1)
-    my_cm.set_bad(color='black')
-    image = np.ma.masked_where(image == 0, image)
-    image = np.uint8(my_cm(image) * 255)
+    # my_cm = cm.get_cmap(COLOR_MAP, masks_shape[-1] + 1)
+    # my_cm.set_bad(color='black')
+    # image = np.ma.masked_where(image == 0, image)
+    # image = np.uint8(my_cm(image) * 255)
     if image.ndim == 3:
         image = image[:, :, 0]
     mask_image_name = ".".join(image_name.split('.')[:-1]) + "_mask.png"

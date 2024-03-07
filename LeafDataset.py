@@ -56,6 +56,7 @@ class LeafDataset(utils.Dataset):
         leaf_dataset.small_leaf_images_ratio = config_dict.get("small_leaf_images_ratio")
         leaf_dataset.small_leaf_position_offset = config_dict.get("small_leaf_position_offset")
         leaf_dataset.small_leaves_in_image_ratio = config_dict.get("small_leaves_in_image_ratio")
+        leaf_dataset.use_triads = config_dict.get("use_triads")
         leaf_dataset.img_heights = leaf_dataset.build_leaf_height_map(folder_objects)
         leaf_dataset.load_shapes(number_of_images, height, width)
         leaf_dataset.prepare()
@@ -78,7 +79,7 @@ class LeafDataset(utils.Dataset):
                 tmp = Image.open(os.path.join(root, filename))
                 if tmp.mode == 'RGBA':
                     tmp = tmp.convert('RGB')
-                #tmp = tmp.resize((self.image_size,self.image_size), resample=Image.BILINEAR)
+                tmp = tmp.resize((self.image_size,self.image_size), resample=Image.BILINEAR)
                 self.bg.append(tmp)
         _, _, files_bgs = next(os.walk(self.folder_bgs))
         self.number_of_bgs = len(files_bgs)
@@ -119,11 +120,15 @@ class LeafDataset(utils.Dataset):
         # AZ END INSERT
 
         small_leafs_count = math.floor(N * self.small_leaves_in_image_ratio)
+        if self.use_triads:
+            leaf_idx = random.choices(range(self.number_of_leafs), k=N)
+            leaf_idx = sorted(leaf_idx, key=lambda x: self.img_heights[x], reverse=True)
+
         for i in range(N):
             # AZ modified
             if self.centered_leaves:
                 is_small_leaf = is_small_leaf_image or i >= (N - small_leafs_count) # small leaves should be last
-                shape, location, scale, angle, index = self.random_shape_centered(height, width, x_location, y_location, prev_angle, is_small_leaf)
+                shape, location, scale, angle, index = self.random_shape_centered(height, width, x_location, y_location, prev_angle, i, is_small_leaf=is_small_leaf, use_triads=self.use_triads, leaf_index=leaf_idx[i])
             else:
                 shape, location, scale, angle, index = self.random_shape(height, width)
             prev_angle = angle
@@ -132,7 +137,7 @@ class LeafDataset(utils.Dataset):
             shapes.append((shape, location, scale, angle, index))
             boxes.append([location[1], location[0], location[1] + y, location[0] + x])
 
-        keep_ixs = utils.non_max_suppression(np.array(boxes), np.arange(N), 0.5)    # 0.3
+        keep_ixs = utils.non_max_suppression(np.array(boxes), np.arange(N), 0.7)    # 0.5
         shapes = [s for i, s in enumerate(shapes) if i in keep_ixs]
         return bg_color, shapes
 
@@ -191,14 +196,24 @@ class LeafDataset(utils.Dataset):
 
         return random.choice(small_leaves_indexes)
         
-    def random_shape_centered(self, height, width, x_loc, y_loc, prev_angle, is_small_leaf=False):
+    def random_shape_centered(self, height, width, x_loc, y_loc, prev_angle, leaf_id, is_small_leaf=False, use_triads=False, leaf_index=None):
         shape = random.choice(["leaf"])
 
         x_scale = random.uniform(self.min_scale, self.max_scale)
         y_scale = x_scale * random.uniform(self.min_aspect_ratio, self.max_aspect_ratio)
-
-        angle = (prev_angle + self.leaf_angle_offset + random.randint(-20, 20)) % 360   # (prev_angle + 120 + random.randint(-10, 10))
-        #angle = random.randint(0, 360)
+        
+        if use_triads:
+            if leaf_id % 3 == 0:
+                # New triad
+                triad_num = leaf_id // 3
+                rand_offset = 12.5 / (triad_num + 1)
+                triad_angle_offset = (120 / 2**triad_num) + random.uniform(-rand_offset, rand_offset)
+                angle = (prev_angle + triad_angle_offset) % 360
+            else:
+                angle = (prev_angle + 127.5 + random.uniform(-12.5, 12.5)) % 360
+        else:    
+            angle = (prev_angle + self.leaf_angle_offset + random.randint(-20, 20)) % 360   # (prev_angle + 120 + random.randint(-10, 10))
+            #angle = random.randint(0, 360)
 
         if is_small_leaf:
             x_location = math.floor(x_loc - self.small_leaf_position_offset * math.sin(math.radians(angle)))
@@ -208,6 +223,18 @@ class LeafDataset(utils.Dataset):
             x_location = math.floor(x_loc - self.leaf_position_offset * math.sin(math.radians(angle))) # 64 is approx half size of leaf height in pixels
             y_location = math.floor(y_loc - self.leaf_position_offset * math.cos(math.radians(angle))) # 64   120      80  100
             index = random.randint(0, self.number_of_leafs - 1)
+        
+        if use_triads:
+            index = leaf_index
+            triad_num = leaf_id // 3
+            leaf_position_offset = self.leaf_position_offset - (5*triad_num)
+            percentile_height = np.percentile(self.img_heights, self.small_leaf_percentile)
+            if self.img_heights[index] < percentile_height:
+                leaf_position_offset = self.small_leaf_position_offset
+
+            x_location = math.floor(x_loc - leaf_position_offset * math.sin(math.radians(angle))) 
+            y_location = math.floor(y_loc - leaf_position_offset * math.cos(math.radians(angle)))
+        
 
         return shape, (x_location, y_location), (x_scale, y_scale), angle, index
 
