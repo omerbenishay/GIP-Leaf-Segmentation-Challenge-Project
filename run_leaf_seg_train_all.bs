@@ -14,9 +14,9 @@ conda activate leafseg
 saved_samples=10
 epochs=0
 steps_per_epoch=100
-leaf_type="clean"
+leaf_type="alpha_0.1"
 
 python LeafSegmentor.py train datasetA1.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 1 -lt $leaf_type -S 512
-python LeafSegmentor.py train datasetA2.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 2 -lt $leaf_type -S 512
-python LeafSegmentor.py train datasetA3.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 3 -lt $leaf_type -S 512
-python LeafSegmentor.py train datasetA4.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 4 -lt $leaf_type -S 448
+# python LeafSegmentor.py train datasetA2.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 2 -lt $leaf_type -S 512
+# python LeafSegmentor.py train datasetA3.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 3 -lt $leaf_type -S 512
+# python LeafSegmentor.py train datasetA4.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 4 -lt $leaf_type -S 448
