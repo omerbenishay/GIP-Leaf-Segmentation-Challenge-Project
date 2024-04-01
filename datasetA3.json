@@ -15,7 +15,7 @@
             "max_scale": 0.25,
             "image_size": 512,
             "small_leaf_percentile": 20,
-            "number_of_images": 100,
+            "number_of_images": 20000,
             "centered_leaves": true,
             "small_leaf_images_ratio": 0,
             "small_leaf_position_offset": 20,
