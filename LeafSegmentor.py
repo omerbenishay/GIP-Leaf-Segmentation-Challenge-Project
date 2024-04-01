@@ -31,7 +31,7 @@ def main():
     parser_train.add_argument('dataset_config_file', metavar='dataset-config-file',
                               help=HelpReference.TrainReference.dataset_config)
     parser_train.add_argument('-A', "--Afolder", help=HelpReference.TrainReference.folder, default="1")    
-    parser_train.add_argument('-lt', "--leaf-type", choices=['clean', 'clean_smooth', 'clean_smooth_r05', 'org'], help=HelpReference.TrainReference.leaf_type, default="clean")                       
+    parser_train.add_argument('-lt', "--leaf-type", choices=['clean', 'clean_smooth', 'clean_smooth_r05', 'org', 'alpha_0.15'], help=HelpReference.TrainReference.leaf_type, default="clean")                       
     parser_train.add_argument('-S', "--image-size", help=HelpReference.TrainReference.image_size, default="512")
 
     # parser for infer

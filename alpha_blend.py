@@ -8,13 +8,13 @@ parser = argparse.ArgumentParser(description='Alpha blending')
 parser.add_argument('-A', '--A_folder', choices=['all', '1', '2', '3', '4'],
                     help='Folder to apply alpha blending on', default='all')
 parser.add_argument('-D', '--distance_threshold', type=float,
-                    help='Distance for thresholding alpha values', default='0.1')
+                    help='Distance for thresholding alpha values', default='0.15')
 
 _CLEAN_LEAVES_PATH = '/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/datasets/06 - Leaves/A{folder_num}_clean/'
 _OUTPUT_PATH = '/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/datasets/06 - Leaves/A{folder_num}_alpha_{distance_threshold}/'
 
 
-def apply_alpha_blend(image_path: str, distance_threshold: float = 0.1) -> Image:
+def apply_alpha_blend(image_path: str, distance_threshold: float = 0.15) -> Image:
     img = Image.open(image_path)
     img_array = np.array(img)
 
@@ -26,13 +26,15 @@ def apply_alpha_blend(image_path: str, distance_threshold: float = 0.1) -> Image
     width_arr = np.repeat(leaf_mask.sum(axis=1), img_width).reshape(img_height, img_width)
 
     # Apply distance transform divided by width
-    alpha = distance_transform_edt(leaf_mask) / width_arr
+    alpha = distance_transform_edt(leaf_mask) / (width_arr ** 0.5)
     # Fill nans with 0
     alpha = np.nan_to_num(alpha)
     # Normalize alpha values to [0, 1]
     alpha = alpha / alpha.max()
     # Threshold alpha values
     alpha[alpha > distance_threshold] = 1
+    alpha[alpha > 0] += 0.3
+    alpha[alpha > 1] = 1
     # Convert alpha values to uint8
     alpha = (255 * alpha).astype(np.uint8)
     alpha = alpha[:, :, np.newaxis]
