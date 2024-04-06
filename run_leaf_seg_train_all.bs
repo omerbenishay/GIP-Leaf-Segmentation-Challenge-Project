@@ -15,6 +15,7 @@ saved_samples=10
 epochs=100
 steps_per_epoch=100
 leaf_type="alpha_0.15"
+# leaf_type="clean"
 
 python LeafSegmentor.py train datasetA1.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 1 -lt $leaf_type -S 512
 python LeafSegmentor.py train datasetA2.json -k $saved_samples -e $epochs -s $steps_per_epoch -A 2 -lt $leaf_type -S 512

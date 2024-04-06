@@ -41,22 +41,6 @@ class HelpReference:
         task = "task id for agrinet datasets"
         gt = "Dataset adapter name"
 
-    class CutReference:
-        description = "Cut single leaf pictures from an annotated dataset"
-        normalize = "Normalize the generated pictures to the specified width-size. By default pictures are not normalized, every leaf stays at its original size"
-        background = "Specify the background of the leaf, transparent means keep the alpha channel [default: transparent]"
-        limit = "Maximum number of object files to create. Not specifying this argument will result in cutting all the available objects"
-        path = "path to json file in COCO format, with relative image paths"
-        output = "Set output directory [default: current]"
-        adapter = "Type of annotation - specify in order to correctly parse the annotation file"
-        rotate = "Rotate output files to match 2 points from annotation"
-        task = "task id for agrinet datasets"
-
     class InfoReference:
         description = "Prints information about the model saved in the model-info variable"
         model_path = "Path to a .h5 trained model file"
-
-    class DownloadReference:
-        description = "Download specific task id to local directory"
-        task_id = "Task id number e.g: 103"
-        location = "Location to save the files"
