@@ -18,8 +18,10 @@ def apply_alpha_blend(image_path: str, distance_threshold: float = 0.15) -> Imag
     img = Image.open(image_path)
     img_array = np.array(img)
 
-    leaf_mask = img_array[:, :, 3] > 0
+    orig_alpha = img_array[:, :, 3]   
+    leaf_mask = orig_alpha > 0
     img_array = img_array[:, :, :3]
+
 
     img_height, img_width = leaf_mask.shape
     # Each pixel value is the sum of the row (leaf's width) it belongs to
@@ -37,6 +39,8 @@ def apply_alpha_blend(image_path: str, distance_threshold: float = 0.15) -> Imag
     alpha[alpha > 1] = 1
     # Convert alpha values to uint8
     alpha = (255 * alpha).astype(np.uint8)
+    # take min of original alpha and new alpha
+    alpha = np.minimum(alpha, orig_alpha)
     alpha = alpha[:, :, np.newaxis]
 
     # Create RGBA image with alpha blending
