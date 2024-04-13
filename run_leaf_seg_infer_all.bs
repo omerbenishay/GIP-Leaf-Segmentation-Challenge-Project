@@ -37,6 +37,7 @@ output_paths+=( "$(find outputs -type d -name A1 | sort -n | tail -n 1)" )
 output_paths+=( "$(find outputs -type d -name A2 | sort -n | tail -n 1)" )
 output_paths+=( "$(find outputs -type d -name A3 | sort -n | tail -n 1)" )
 output_paths+=( "$(find outputs -type d -name A4 | sort -n | tail -n 1)" )
+output_paths+=( "$(find outputs -type d -name A5 | sort -n | tail -n 1)" )
 echo "output_paths: ${output_paths[*]}"
 python hdf5_utils.py write "${output_paths[@]}"
 

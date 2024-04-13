@@ -68,10 +68,10 @@ def save_masks(masks, output_dir, image_name):
         os.mkdir(output_dir)
     Image.fromarray(image).save(os.path.join(output_dir, mask_image_name))
 
-a1_model_path = "/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/models/A1/leaves20240401T2225/mask_rcnn_leaves.h5"
-a2_model_path = "/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/models/A2/leaves20240402T1706/mask_rcnn_leaves.h5"
-a3_model_path = "/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/models/A3/leaves20240403T0639/mask_rcnn_leaves.h5"
-a4_model_path = "/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/models/A4/leaves20240403T1256/mask_rcnn_leaves.h5"
+a1_model_path = "/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/models/A1/leaves20240406T1633/mask_rcnn_leaves.h5"
+a2_model_path = "/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/models/A2/leaves20240407T1031/mask_rcnn_leaves.h5"
+a3_model_path = "/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/models/A3/leaves20240408T0103/mask_rcnn_leaves.h5"
+a4_model_path = "/home/rotem.green/GIP-Leaf-Segmentation-Challenge-Project/models/A4/leaves20240408T0823/mask_rcnn_leaves.h5"
 inference_config = get_inference_config(LeafSegmentorConfig)
 
 a1_model = a2_model = a3_model = a4_model = mrcnn_lib.MaskRCNN(mode="inference", config=inference_config, model_dir="outputs")
@@ -110,25 +110,21 @@ images = list(generate_images("test_set/A5"))
 # Infer
 inference_dict = {}
 IoU_dict = {}
+output_dir = a4_output_dir
 for image_path in tqdm(images):
     model = None
-    output_dir = None
     inference_dict[image_path] = []
     dir_name = image_path.split(os.path.sep)[-2]
     image_name = os.path.basename(image_path)
     image = Image.open(image_path)
     if image.size == (500, 530):
         model = a1_model
-        output_dir = a1_output_dir
     if image.size == (530, 565):
         model = a2_model
-        output_dir = a2_output_dir
     elif image.size == (2448, 2048):
         model = a3_model
-        output_dir = a3_output_dir
     elif image.size == (441, 441):
         model = a4_model
-        output_dir = a4_output_dir
     image = np.array(image)
     if image.shape[2] > 3:
         image = image[:,:,:3]
