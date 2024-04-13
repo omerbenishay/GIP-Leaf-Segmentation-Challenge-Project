@@ -41,3 +41,5 @@ Parameters that we added to the code in the configuration JSON files are:
 Functions for creating h5 files for the competition website can be found in `hdf5_utils.py`.
 
 Scripts that enabled us to run train and inference on all folder types - `run_leaf_seg_train_all.bs`, `run_leaf_seg_infer_all.bs`.
+
+Script for running infernce on A5 test set - `Infer_A5.py`.
